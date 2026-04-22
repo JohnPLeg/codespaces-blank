@@ -1,11 +1,8 @@
-/week1
-/week10
-/week11
-/week12
-/week13
-/week2
-/week3
-/week4
-/week5-6
-/week8
-/week9
+# 1. Ignore everything in the root
+/*
+
+# 2. Re-include the specific folder
+!/project/
+
+# 3. Optional: Re-include the .gitignore file itself
+!.gitignore
