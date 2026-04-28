@@ -44,12 +44,34 @@ int main() {
     while (1) {
         int c = getch();
         if (c != ERR) {
-            switch (c) {
-                case KEY_UP:    direction = 0; break;
-                case KEY_DOWN:  direction = 1; break;
-                case KEY_LEFT:  direction = 2; break;
-                case KEY_RIGHT: direction = 3; break;
-                case 'q':       endwin(); return 0;
+            if(previous_direction == 0 || previous_direction == 1){
+                switch (c) {
+                    case KEY_LEFT:  direction = 2; break;
+                    case KEY_RIGHT: direction = 3; break;
+                    case 'a':       direction = 2; break;
+                    case 'd':       direction = 3; break;
+                    case 'q':       endwin(); return 0;
+                }  
+            }else if(previous_direction == 2 || previous_direction == 3){
+                switch (c) {
+                    case KEY_UP:    direction = 0; break;
+                    case KEY_DOWN:  direction = 1; break;
+                    case 'w':       direction = 0; break;
+                    case 's':       direction = 1; break;
+                    case 'q':       endwin(); return 0;
+                }  
+            }else{
+                switch (c) {
+                    case KEY_UP:    direction = 0; break;
+                    case KEY_DOWN:  direction = 1; break;
+                    case KEY_LEFT:  direction = 2; break;
+                    case KEY_RIGHT: direction = 3; break;
+                    case 'w':       direction = 0; break;
+                    case 's':       direction = 1; break;
+                    case 'a':       direction = 2; break;
+                    case 'd':       direction = 3; break;
+                    case 'q':       endwin(); return 0;
+                }
             }
         }
         move_snake(ROWS, COLS, background, direction, snake_x, snake_y, snake_len);
