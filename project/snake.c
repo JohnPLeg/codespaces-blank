@@ -103,6 +103,12 @@ void move_snake(int ROWS, int COLS, int background[ROWS][COLS], int direction, i
         snake_y[i] = snake_y[i - 1];
     }
 
+    if (old_tail_x == snake_x[0] && old_tail_y == snake_y[0]) {
+        endwin();
+        printf("Game Over!\n");
+        exit(0);
+    }
+
     switch (direction) {
         case 0: snake_y[0]--; break;
         case 1: snake_y[0]++; break;
