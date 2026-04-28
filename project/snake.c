@@ -110,6 +110,13 @@ void move_snake(int ROWS, int COLS, int background[ROWS][COLS], int direction, i
         case 3: snake_x[0]++; break;
     }
 
+    int border = background[snake_y[0]][snake_x[0]];
+    if(snake_x[0] == border || snake_y[0] == border || snake_x[0] < 0 || snake_y[0] < 0 || background[snake_y[0]][snake_x[0]] == 1) {
+        endwin();
+        printf("Game Over!\n");
+        exit(0);
+    }
+
     background[snake_y[0]][snake_x[0]] = 2;
     attron(COLOR_PAIR(1));
     mvaddstr(snake_y[0], snake_x[0] * 2, "  ");
