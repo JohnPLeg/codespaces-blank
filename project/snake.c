@@ -77,7 +77,6 @@ int main() {
                 queue_push(&q, new_dir);
         }
 
-        // Consume one direction per tick
         int new_dir = queue_pop(&q);
         if (new_dir != -1) {
             int is_reverse = (previous_direction == 0 && new_dir == 1) ||
@@ -91,7 +90,7 @@ int main() {
         move_snake(ROWS, COLS, background, direction, snake_x, snake_y, snake_len);
         previous_direction = direction;
 
-        napms(150);  // replaces timeout() — sleep 150ms per tick
+        napms(150);
     }
 
     endwin();
