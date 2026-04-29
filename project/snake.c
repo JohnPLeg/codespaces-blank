@@ -2,6 +2,7 @@
 #include <sys/ioctl.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 void init_background(int ROWS, int COLS, int background[ROWS][COLS]);
 void draw_border(int ROWS, int COLS, int background[ROWS][COLS]);
@@ -13,6 +14,7 @@ int main() {
     int ROWS = w.ws_row;
     int COLS = w.ws_col / 2;
     int background[ROWS][COLS];
+    int previous_direction = -1;
     int direction = 0;
     int snake_x[100];
     int snake_y[100];
