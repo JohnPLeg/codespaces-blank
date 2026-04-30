@@ -16,7 +16,8 @@ void draw_border(int ROWS, int COLS, int background[ROWS][COLS]);
 void move_snake(int ROWS, int COLS, int background[ROWS][COLS], int direction, int *snake_x, int *snake_y, int snake_len);
 void queue_push(DirQueue *q, int dir);
 int queue_pop(DirQueue *q);
-
+int apple(int ROWS, int COLS, int background[ROWS][COLS], int *apple_x, int *apple_y, int current_apple);
+int eaten(int ROWS, int COLS, int background[ROWS][COLS], int *apple_x, int *apple_y, int snake_x, int snake_y);
 int main() {
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -28,6 +29,9 @@ int main() {
     int snake_x[100];
     int snake_y[100];
     int snake_len = 3;
+    int apple_x;
+    int apple_y;
+    int current_apple = 1;
 
     for (int i = 0; i < snake_len; i++) {
         snake_x[i] = COLS / 2;
@@ -86,10 +90,18 @@ int main() {
             if (!is_reverse)
                 direction = new_dir;
         }
+        current_apple = apple(ROWS, COLS, background, &apple_x, &apple_y, current_apple);
 
         move_snake(ROWS, COLS, background, direction, snake_x, snake_y, snake_len);
         previous_direction = direction;
 
+        if(eaten(ROWS, COLS, background, &apple_x, &apple_y, snake_x[0], snake_y[0]) == 1){
+            snake_x[snake_len] = snake_x[snake_len - 1];
+            snake_y[snake_len] = snake_y[snake_len - 1];
+            snake_len++;
+            current_apple = 1;
+            background[apple_y][apple_x] = 2;
+        } 
         napms(150);
     }
 
@@ -145,7 +157,7 @@ void move_snake(int ROWS, int COLS, int background[ROWS][COLS], int direction, i
         case 3: snake_x[0]++; break;
     }
 
-    if (background[snake_y[0]][snake_x[0]] != 0) {
+    if (background[snake_y[0]][snake_x[0]] != 0 && background[snake_y[0]][snake_x[0]] != 3) {
         endwin();
         printf("Game Over!\n");
         exit(0);
@@ -173,4 +185,28 @@ int queue_pop(DirQueue *q) {
     q->head = (q->head + 1) % QUEUE_SIZE;
     q->count--;
     return dir;
+}
+
+int apple(int ROWS, int COLS, int background[ROWS][COLS], int *apple_x, int *apple_y, int current_apple){
+    if(current_apple == 1){
+        int x = rand() % (COLS - 2) + 1;
+        int y = rand() % (ROWS - 2) + 1;
+        attron(COLOR_PAIR(1));
+        mvaddstr(y, x * 2, "  ");
+        attroff(COLOR_PAIR(1));
+        background[y][x] = 3;
+        *apple_x = x;
+        *apple_y = y;
+    
+        return current_apple = 0;
+    } else if(current_apple != 1){
+        return current_apple = 0;
+    }
+}
+
+int eaten(int ROWS, int COLS, int background[ROWS][COLS], int *apple_x, int *apple_y, int snake_x, int snake_y){
+    if(snake_x == *apple_x && snake_y == *apple_y){
+        return 1;
+    }
+    return 0;
 }
