@@ -18,6 +18,7 @@ void queue_push(DirQueue *q, int dir);
 int queue_pop(DirQueue *q);
 int apple(int ROWS, int COLS, int background[ROWS][COLS], int *apple_x, int *apple_y, int current_apple);
 int eaten(int ROWS, int COLS, int background[ROWS][COLS], int *apple_x, int *apple_y, int snake_x, int snake_y);
+
 int main() {
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -51,6 +52,7 @@ int main() {
 
     init_pair(1, COLOR_RED, COLOR_GREEN);
     init_pair(2, -1, -1);
+    init_pair(3, COLOR_RED, COLOR_RED);
     bkgd(COLOR_PAIR(2));
 
     draw_border(ROWS, COLS, background);
@@ -191,9 +193,9 @@ int apple(int ROWS, int COLS, int background[ROWS][COLS], int *apple_x, int *app
     if(current_apple == 1){
         int x = rand() % (COLS - 2) + 1;
         int y = rand() % (ROWS - 2) + 1;
-        attron(COLOR_PAIR(1));
+        attron(COLOR_PAIR(3));
         mvaddstr(y, x * 2, "  ");
-        attroff(COLOR_PAIR(1));
+        attroff(COLOR_PAIR(3));
         background[y][x] = 3;
         *apple_x = x;
         *apple_y = y;
