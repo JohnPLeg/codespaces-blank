@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define QUEUE_SIZE 3
 
@@ -230,8 +231,31 @@ void end_screen(int ROWS, int COLS, int won){
     }
     char *prompt = "Press any key to exit.";
 
-    int box_w = 30;   /* chars wide in cell units (each cell = 2 terminal cols) */
+    int box_w = 30;   
     int box_h = 7;
     int box_y = (ROWS - box_h) / 2;
-    int box_x = (COLS - box_w / 2) / 2; /* centre in double-width grid */
+    int box_x = (COLS - box_w / 2) / 2; 
+
+        int pair;
+    if(won == 1){
+        pair = 4;
+    } else {
+        pair = 5;
+    }
+    attron(COLOR_PAIR(pair) | A_BOLD);
+    for (int i = 0; i < box_h + box_y; i++){
+        for(int j = box_x; j < box_x + box_w / 2; j++){
+            if(i >= box_y){
+                mvaddstr(i, j * 2, "  ");
+            }
+        }
+    }
+    
+    int title_len = strlen(title);
+    int title_col = box_x + (box_w /2 - (title_len+1)/2)/2;
+    mvaddstr(box_y + 1, title_col * 2, title);
+
+    int sub_len = strlen(sub);
+    int sub_col = box_x + (box_w/2 -(sub_len+1)/2)/2;
+    mvaddstr(box_y + 3, sub_col * 2, sub);
 }
