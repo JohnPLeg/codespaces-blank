@@ -18,6 +18,7 @@ void queue_push(DirQueue *q, int dir);
 int queue_pop(DirQueue *q);
 int apple(int ROWS, int COLS, int background[ROWS][COLS], int *apple_x, int *apple_y, int current_apple);
 int eaten(int ROWS, int COLS, int background[ROWS][COLS], int *apple_x, int *apple_y, int snake_x, int snake_y);
+void end_screen(int ROWS, int COLS, int won);
 
 int main() {
     struct winsize w;
@@ -211,4 +212,26 @@ int eaten(int ROWS, int COLS, int background[ROWS][COLS], int *apple_x, int *app
         return 1;
     }
     return 0;
+}
+
+void end_screen(int ROWS, int COLS, int won){
+
+    char *title;
+    if(won == 1){
+        title = "You Win!";
+    } else {
+        title = "Game Over!";
+    }
+    char *sub;
+    if(won == 1){
+        sub = "Reached 20 length!";
+    } else {
+        sub = "You lost.";
+    }
+    char *prompt = "Press any key to exit.";
+
+    int box_w = 30;   /* chars wide in cell units (each cell = 2 terminal cols) */
+    int box_h = 7;
+    int box_y = (ROWS - box_h) / 2;
+    int box_x = (COLS - box_w / 2) / 2; /* centre in double-width grid */
 }
