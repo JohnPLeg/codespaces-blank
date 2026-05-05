@@ -116,7 +116,7 @@ int main() {
             endwin();
             exit(0);
         }
-        napms(150);
+        napms(125);
     }
 
     endwin();
