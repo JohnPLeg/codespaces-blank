@@ -14,7 +14,7 @@ typedef struct {
 
 void init_background(int ROWS, int COLS, int background[ROWS][COLS]);
 void draw_border(int ROWS, int COLS, int background[ROWS][COLS]);
-void move_snake(int ROWS, int COLS, int background[ROWS][COLS], int direction, int *snake_x, int *snake_y, int snake_len);
+int move_snake(int ROWS, int COLS, int background[ROWS][COLS], int direction, int *snake_x, int *snake_y, int snake_len);
 void queue_push(DirQueue *q, int dir);
 int queue_pop(DirQueue *q);
 int apple(int ROWS, int COLS, int background[ROWS][COLS], int *apple_x, int *apple_y, int current_apple);
@@ -96,7 +96,11 @@ int main() {
         }
         current_apple = apple(ROWS, COLS, background, &apple_x, &apple_y, current_apple);
 
-        move_snake(ROWS, COLS, background, direction, snake_x, snake_y, snake_len);
+        if(move_snake(ROWS, COLS, background, direction, snake_x, snake_y, snake_len) == 0){
+            end_screen(ROWS, COLS, 0);
+            endwin();
+            exit(0);
+        }
         previous_direction = direction;
 
         if(eaten(ROWS, COLS, background, &apple_x, &apple_y, snake_x[0], snake_y[0]) == 1){
@@ -106,6 +110,12 @@ int main() {
             current_apple = 1;
             background[apple_y][apple_x] = 2;
         } 
+
+        if(snake_len == 20){
+            end_screen(ROWS, COLS, 1);
+            endwin();
+            exit(0);
+        }
         napms(150);
     }
 
@@ -140,8 +150,8 @@ void draw_border(int ROWS, int COLS, int background[ROWS][COLS]) {
     }
 }
 
-void move_snake(int ROWS, int COLS, int background[ROWS][COLS], int direction, int *snake_x, int *snake_y, int snake_len) {
-    if (direction == -1) return;
+int move_snake(int ROWS, int COLS, int background[ROWS][COLS], int direction, int *snake_x, int *snake_y, int snake_len) {
+    if (direction == -1) return 1;
     int old_tail_x = snake_x[snake_len - 1];
     int old_tail_y = snake_y[snake_len - 1];
     background[old_tail_y][old_tail_x] = 0;
@@ -162,9 +172,7 @@ void move_snake(int ROWS, int COLS, int background[ROWS][COLS], int direction, i
     }
 
     if (background[snake_y[0]][snake_x[0]] != 0 && background[snake_y[0]][snake_x[0]] != 3) {
-        endwin();
-        printf("Game Over!\n");
-        exit(0);
+        return 0;
     }
 
     background[snake_y[0]][snake_x[0]] = 2;
@@ -173,6 +181,7 @@ void move_snake(int ROWS, int COLS, int background[ROWS][COLS], int direction, i
     attroff(COLOR_PAIR(1));
 
     refresh();
+    return 1;
 }
 
 void queue_push(DirQueue *q, int dir) {
@@ -216,6 +225,7 @@ int eaten(int ROWS, int COLS, int background[ROWS][COLS], int *apple_x, int *app
 }
 
 void end_screen(int ROWS, int COLS, int won){
+    nodelay(stdscr, FALSE);
 
     char *title;
     if(won == 1){
@@ -236,7 +246,7 @@ void end_screen(int ROWS, int COLS, int won){
     int box_y = (ROWS - box_h) / 2;
     int box_x = (COLS - box_w / 2) / 2; 
 
-        int pair;
+    int pair;
     if(won == 1){
         pair = 4;
     } else {
@@ -258,4 +268,12 @@ void end_screen(int ROWS, int COLS, int won){
     int sub_len = strlen(sub);
     int sub_col = box_x + (box_w/2 -(sub_len+1)/2)/2;
     mvaddstr(box_y + 3, sub_col * 2, sub);
+    
+    int prompt_len = strlen(prompt);
+    int prompt_col = box_x + (box_w / 2 - (prompt_len + 1) / 2) / 2;
+    mvaddstr(box_y + 5, prompt_col * 2, prompt);
+ 
+    attroff(COLOR_PAIR(pair) | A_BOLD);
+    refresh();
+    getch();
 }
